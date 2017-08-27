@@ -1,6 +1,7 @@
 package com.vd5.dcs;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author beou on 8/25/17 14:38
@@ -8,7 +9,12 @@ import java.util.List;
  */
 public interface Protocol {
     String getName();
-    void initTrackerServer(List<TrackerServer> serverList);
+    String getAddress();
+    int getTcpPort();
+    int getUdpPort();
+    boolean isEnabled();
+
+    void initTrackerServer(Map<String, TrackerServer> serverList);
     //Collection<String> getSupportedTextCommands();
     //void sendTextCommand(String destAddress, Command command);
     //Collection<String> getSupportedDataCommands();

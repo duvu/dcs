@@ -1,11 +1,10 @@
-package com.vd5.dcs.protocol;
+package com.vd5.dcs.protocol.xirgo2050;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
-import io.netty.handler.codec.string.StringDecoder;
 
 /**
  * @author beou on 8/25/17 14:52
@@ -25,8 +24,6 @@ public class Xirgo2050ChannelInitializer extends ChannelInitializer<SocketChanne
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
         ChannelPipeline channelPipeline = ch.pipeline();
-
-        channelPipeline.addLast(new StringDecoder());
         channelPipeline.addLast(new Xirgo2050Handler());
     }
 }
