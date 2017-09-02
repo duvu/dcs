@@ -1,10 +1,9 @@
-package com.vd5.dcs.protocol.xirgo2050;
+package com.vd5.dcs.protocol.tk10x;
 
 import com.vd5.dcs.BaseAsciiProtocolDecoder;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
-import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
@@ -14,7 +13,7 @@ import java.util.List;
  * @version 1.0
  */
 @Slf4j
-public class Xirgo2050Handler extends BaseAsciiProtocolDecoder {
+public class Tk10xHandler extends BaseAsciiProtocolDecoder {
     /**
      * Decode the from one {@link ByteBuf} to an other. This method will be called till either the input
      * {@link ByteBuf} has nothing to read when return from this method or till nothing was read from the input
@@ -27,9 +26,9 @@ public class Xirgo2050Handler extends BaseAsciiProtocolDecoder {
      */
 //    @Override
 //    protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-//        log.debug(ctx.channel().remoteAddress().toString());
+//        log.info(ctx.channel().remoteAddress().toString());
 //    }
-
+//
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) { // (4)
         // Close the connection when an exception is raised.

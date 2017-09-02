@@ -4,8 +4,8 @@ import com.vd5.utils.StringUtils;
 import io.netty.bootstrap.AbstractBootstrap;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
-import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -31,8 +31,12 @@ public class TrackerServer {
     private AbstractBootstrap bootstrap;
     private ChannelInitializer channelInitializer;
 
-    private NioEventLoopGroup commonGroup;
+
+
+    private final NioEventLoopGroup bossGroup;
     private NioEventLoopGroup workerGroup;
+
+    private Channel channel;
 
     public TrackerServer(AbstractBootstrap bootstrap, String name) {
         this.bootstrap = bootstrap;
@@ -40,7 +44,7 @@ public class TrackerServer {
         if (isDuplex()) {
             workerGroup = new NioEventLoopGroup();
         }
-        commonGroup = new NioEventLoopGroup();
+        bossGroup = new NioEventLoopGroup();
     }
 
     private boolean isDuplex() {
@@ -54,27 +58,32 @@ public class TrackerServer {
             log.info("...starting tcp-server");
 
             ServerBootstrap tcpServerBootstrap = (ServerBootstrap) bootstrap;
-            tcpServerBootstrap.group(commonGroup, workerGroup)
+            tcpServerBootstrap.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
                     .handler(new LoggingHandler(LogLevel.INFO))
                     .childHandler(channelInitializer);
-            tcpServerBootstrap.bind(enpoint).sync().channel();
+
+            channel = tcpServerBootstrap.bind(enpoint).sync().channel().closeFuture().sync().channel();
 
 
         } else if (bootstrap instanceof Bootstrap) {
             log.info("...starting udp-server");
             Bootstrap udpServerBootstrap = (Bootstrap)bootstrap;
-            udpServerBootstrap.group(commonGroup)
+            udpServerBootstrap.group(bossGroup)
                     .channel(NioDatagramChannel.class)
+                    .handler(new LoggingHandler(LogLevel.INFO))
                     .handler(channelInitializer);
-            udpServerBootstrap.bind(enpoint).sync().channel();
+            channel = udpServerBootstrap.bind(enpoint).sync().channel().closeFuture().sync().channel();
         }
     }
 
     public void stop() {
         if (isDuplex()) {
-            commonGroup.shutdownGracefully();
+            bossGroup.shutdownGracefully();
         }
         workerGroup.shutdownGracefully();
+
+        channel.close();
+        channel.parent().close();
     }
 }

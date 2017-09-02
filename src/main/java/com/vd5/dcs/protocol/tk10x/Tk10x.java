@@ -2,6 +2,8 @@ package com.vd5.dcs.protocol.tk10x;
 
 import com.vd5.dcs.AbstractProtocol;
 import com.vd5.dcs.TrackerServer;
+import io.netty.bootstrap.Bootstrap;
+import io.netty.bootstrap.ServerBootstrap;
 
 import java.util.List;
 import java.util.Map;
@@ -12,12 +14,33 @@ import java.util.Map;
  */
 public class Tk10x extends AbstractProtocol{
 
-    public Tk10x() {
-        super("Tk10x");
-    }
+    public Tk10x() { }
 
     @Override
-    public void initTrackerServer(Map<String, TrackerServer> serverMap) {
-        //create and put a tracker server to map
+    public void initTrackerServer(Map<String, TrackerServer> serverList) {
+        int udpPort = this.getUdpPort();
+        int tcpPort = this.getTcpPort();
+        String address = this.getAddress();
+        String name = this.getName();
+
+        if (udpPort > 0) {
+            //init udp-server
+            Bootstrap bootstrap = new Bootstrap();
+            TrackerServer udpServer = new TrackerServer(bootstrap, getName());
+            udpServer.setChannelInitializer(new Tk10xChannelInitializer());
+            udpServer.setPort(udpPort);
+            udpServer.setAddress(address);
+            serverList.put(name, udpServer);
+        }
+
+        if (tcpPort > 0) {
+            //init tcp-server
+            ServerBootstrap serverBootstrap = new ServerBootstrap();
+            TrackerServer tcpServer = new TrackerServer(serverBootstrap, getName());
+            tcpServer.setChannelInitializer(new Tk10xChannelInitializer());
+            tcpServer.setPort(tcpPort);
+            tcpServer.setAddress(address);
+            serverList.put(name, tcpServer);
+        }
     }
 }
