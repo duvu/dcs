@@ -1,4 +1,4 @@
-package com.vd5;
+package com.vd5.exception;
 
 /**
  * @author beou on 8/27/17 04:30

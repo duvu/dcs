@@ -1,18 +1,14 @@
 package com.vd5.dcs;
 
-import com.vd5.DCSRuntimeException;
-import com.vd5.dcs.protocol.xirgo2050.Xirgo2050;
+import com.vd5.exception.DCSRuntimeException;
 import com.vd5.utils.StringUtils;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

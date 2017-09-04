@@ -1,11 +1,16 @@
 package com.vd5.dcs.protocol.tk10x;
 
+import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
+import io.netty.handler.codec.DelimiterBasedFrameDecoder;
+import io.netty.handler.codec.Delimiters;
 import io.netty.handler.codec.bytes.ByteArrayDecoder;
+import io.netty.handler.codec.string.StringDecoder;
+import io.netty.handler.codec.string.StringEncoder;
 
 /**
  * @author beou on 8/25/17 14:52
@@ -25,7 +30,9 @@ public class Tk10xChannelInitializer extends ChannelInitializer<SocketChannel> {
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
         ChannelPipeline channelPipeline = ch.pipeline();
-        channelPipeline.addLast(new ByteToMessageDecoderImpl());
-//        channelPipeline.addLast(new Tk10xHandler());
+        channelPipeline.addLast(new DelimiterBasedFrameDecoder(1024, Unpooled.wrappedBuffer(new byte[] { ')'})));
+        channelPipeline.addLast(new StringDecoder());
+        channelPipeline.addLast(new StringEncoder());
+        channelPipeline.addLast(new Tk10xHandler());
     }
 }

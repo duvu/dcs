@@ -3,6 +3,7 @@ package com.vd5.dcs.protocol.tk10x;
 import com.vd5.dcs.BaseAsciiProtocolDecoder;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import lombok.extern.slf4j.Slf4j;
 
@@ -13,26 +14,21 @@ import java.util.List;
  * @version 1.0
  */
 @Slf4j
-public class Tk10xHandler extends BaseAsciiProtocolDecoder {
+public class Tk10xHandler extends SimpleChannelInboundHandler<String> {
     /**
-     * Decode the from one {@link ByteBuf} to an other. This method will be called till either the input
-     * {@link ByteBuf} has nothing to read when return from this method or till nothing was read from the input
-     * {@link ByteBuf}.
+     * <strong>Please keep in mind that this method will be renamed to
+     * {@code messageReceived(ChannelHandlerContext, I)} in 5.0.</strong>
+     * <p>
+     * Is called for each message of type {@link I}.
      *
-     * @param ctx the {@link ChannelHandlerContext} which this {@link ByteToMessageDecoder} belongs to
-     * @param in  the {@link ByteBuf} from which to read data
-     * @param out the {@link List} to which decoded messages should be added
-     * @throws Exception is thrown if an error occurs
+     * @param ctx the {@link ChannelHandlerContext} which this {@link SimpleChannelInboundHandler}
+     *            belongs to
+     * @param msg the message to handle
+     * @throws Exception is thrown if an error occurred
      */
-//    @Override
-//    protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-//        log.info(ctx.channel().remoteAddress().toString());
-//    }
-//
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) { // (4)
-        // Close the connection when an exception is raised.
-        cause.printStackTrace();
-        ctx.close();
+    protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
+        log.info("Test");
+        log.info("Message: " + msg);
     }
 }
